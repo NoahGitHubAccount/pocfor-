@@ -1,0 +1,14 @@
+# Web API
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+
+# NLP
+jieba==0.42.1
+gensim==4.3.2
+
+# 數值計算
+numpy==1.26.4
+scikit-learn==1.4.2
+
+# 資料處理
+pandas==2.2.1

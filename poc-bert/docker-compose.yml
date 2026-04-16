@@ -1,0 +1,23 @@
+services:
+
+  train:
+    build: .
+    image: smart-case-bert:latest
+    command: python src/train.py
+    volumes:
+      - ../2026打包專案包/安裝程式包/textCNN_主程式/newData_1000_title:/app/data:ro
+      - ./checkpoints:/app/checkpoints
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  api:
+    build: .
+    image: smart-case-bert:latest
+    command: uvicorn src.api:app --host 0.0.0.0 --port 8081
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./checkpoints:/app/checkpoints:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped

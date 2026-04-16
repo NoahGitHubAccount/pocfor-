@@ -1,0 +1,28 @@
+services:
+
+  # ── 訓練服務（一次性執行，完成後退出）──────────────────────
+  train:
+    build: .
+    image: smart-case-classifier:latest
+    command: python src/train.py
+    volumes:
+      # 訓練資料（唯讀掛載，不進 image）
+      - ../2026打包專案包/安裝程式包/textCNN_主程式/newData_1000_title:/app/data:ro
+      # 模型產出（可讀寫）
+      - ./checkpoints:/app/checkpoints
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  # ── API 服務（常駐，讀取 checkpoints 提供預測）────────────
+  api:
+    build: .
+    image: smart-case-classifier:latest
+    command: uvicorn src.api:app --host 0.0.0.0 --port 8080
+    ports:
+      - "8080:8080"
+    volumes:
+      # 模型讀取（唯讀）
+      - ./checkpoints:/app/checkpoints:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
