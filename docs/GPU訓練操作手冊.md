@@ -28,74 +28,99 @@ nvidia-smi
 
 ---
 
-### 1.2 安裝 Docker Desktop for Windows
+### 1.2 安裝 Docker（二擇一）
+
+先確認 Docker 是否已安裝：
 
 ```powershell
 docker --version
 docker compose version
 ```
 
-若未安裝，依以下步驟操作：
+若未安裝或 Docker Desktop 無法啟動，選擇以下其中一種方式：
 
-#### Step 1：啟用 WSL2
+---
 
-以**系統管理員**身分開啟 PowerShell，執行：
-
-```powershell
-wsl --install
-```
-
-重新開機後，確認 WSL2 版本：
-
-```powershell
-wsl --version
-```
-
-#### Step 2：安裝 Docker Desktop
+#### 方法 A：Docker Desktop（能正常啟動者用此方式）
 
 1. 前往 https://www.docker.com/products/docker-desktop/ 下載安裝檔
 2. 執行安裝，勾選 **Use WSL 2 instead of Hyper-V**
 3. 安裝完成後重新開機
 
-#### Step 3：啟用 Docker GPU 支援
+Docker Desktop **內建支援 NVIDIA GPU**（透過 WSL2），不需要額外安裝 NVIDIA Container Toolkit。確認：
 
-Docker Desktop for Windows **內建支援 NVIDIA GPU**（透過 WSL2），不需要額外安裝 NVIDIA Container Toolkit。只需確認：
+1. NVIDIA 驅動版本 ≥ 525.60
+2. Docker Desktop → Settings → Resources → WSL integration → 啟用你的 WSL distro
 
-1. NVIDIA 驅動版本 ≥ 525.60（`nvidia-smi` 可看到版本號）
-2. Docker Desktop → Settings → Resources → WSL integration → 啟用你使用的 WSL distro
-
-#### Step 4：驗證 GPU 可用
+驗證：
 
 ```powershell
 docker run --rm --gpus all nvidia/cuda:11.8.0-base-ubuntu20.04 nvidia-smi
 ```
 
-看到 GPU 資訊代表成功。
-
 ---
 
-<details>
-<summary>Linux 安裝方式（點擊展開）</summary>
+#### 方法 B：WSL2 + Docker Engine（Docker Desktop 無法啟動時用此方式）
+
+> **適用情境**：Docker Desktop 安裝後無法 starting，或出現 Hyper-V 相關錯誤。
+> WSL2 Ubuntu 已存在者可直接從 Step 2 開始。
+
+**Step 1：確認 WSL2 與 Ubuntu 已安裝**
+
+以系統管理員開啟 PowerShell：
+
+```powershell
+wsl --set-default-version 2
+wsl -l -v
+```
+
+確認有 Ubuntu 且 VERSION 為 2。若無 Ubuntu：
+
+```powershell
+wsl --install -d Ubuntu
+```
+
+**Step 2：進入 Ubuntu WSL2**
+
+```powershell
+wsl -d Ubuntu
+```
+
+**Step 3：在 Ubuntu 內安裝 Docker Engine**
 
 ```bash
-# Docker
 curl -fsSL https://get.docker.com | sh
 sudo usermod -aG docker $USER
 newgrp docker
+docker --version
+```
 
-# NVIDIA Container Toolkit
-distribution=$(. /etc/os-release; echo $ID$VERSION_ID)
-curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
-curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list \
-  | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
-sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
+**Step 4：安裝 NVIDIA Container Toolkit**
+
+```bash
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey \
+  | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+
+curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list \
+  | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' \
+  | sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
+sudo apt-get update
+sudo apt-get install -y nvidia-container-toolkit
+sudo nvidia-ctk runtime configure --runtime=docker
 sudo systemctl restart docker
+```
 
-# 驗證
+**Step 5：驗證 GPU 可用**
+
+```bash
 docker run --rm --gpus all nvidia/cuda:11.8.0-base-ubuntu20.04 nvidia-smi
 ```
 
-</details>
+看到 GPU 資訊代表成功。
+
+> **注意**：使用方法 B 時，後續所有 docker 指令都需在 **WSL2 Ubuntu 終端機內**執行（不是 PowerShell）。
+> Windows 路徑對應：`C:\smart-case\` → WSL2 內為 `/mnt/c/smart-case/`
 
 ---
 
@@ -185,8 +210,15 @@ RUN pip install --no-cache-dir \
 
 ## 四、Build Image
 
+**方法 A（PowerShell）：**
 ```powershell
 cd C:\smart-case\poc
+docker build -t smart-case-classifier:gpu .
+```
+
+**方法 B（WSL2 Ubuntu）：**
+```bash
+cd /mnt/c/smart-case/poc
 docker build -t smart-case-classifier:gpu .
 ```
 
@@ -195,6 +227,8 @@ docker build -t smart-case-classifier:gpu .
 ---
 
 ## 五、執行訓練
+
+**方法 A（Docker Desktop / PowerShell）：**
 
 ```powershell
 docker run --rm --gpus all `
@@ -206,8 +240,19 @@ docker run --rm --gpus all `
   python src/train.py 2>&1 | Tee-Object -FilePath C:\smart-case\train_log.txt
 ```
 
-> `Tee-Object` 會同時顯示在螢幕上，並存到 `train_log.txt`，方便之後回報。
-> 若使用 cmd 而非 PowerShell，將 `` ` `` 換行符改為 `^`，`Tee-Object` 改為 `> train_log.txt`（但不會同時顯示在螢幕上）。
+**方法 B（WSL2 Ubuntu 終端機）：**
+
+```bash
+docker run --rm --gpus all \
+  -e PYTHONUNBUFFERED=1 \
+  -v /mnt/c/smart-case/data:/app/data:ro \
+  -v /mnt/c/smart-case/poc/checkpoints:/app/checkpoints \
+  -v /mnt/c/smart-case/poc/src:/app/src \
+  smart-case-classifier:gpu \
+  python src/train.py 2>&1 | tee /mnt/c/smart-case/train_log.txt
+```
+
+> `Tee-Object` / `tee` 會同時顯示在螢幕上並存到 `train_log.txt`，方便之後回報。
 
 ### 預期輸出（正常狀況）
 
@@ -273,11 +318,11 @@ cache/              （斷詞快取，可不帶回）
 
 如果 GPU 機器就在手邊，直接用隨身碟或網路芳鄰複製以下檔案回筆電：
 
-| GPU 機器上的路徑 | 複製到筆電 |
-|-----------------|-----------|
+| GPU 機器上的路徑                                    | 複製到筆電                              |
+| --------------------------------------------- | ---------------------------------- |
 | `C:\smart-case\poc\checkpoints\best_model.pt` | `D:\POC_for_智慧分案\poc\checkpoints\` |
-| `C:\smart-case\poc\checkpoints\labels.txt` | `D:\POC_for_智慧分案\poc\checkpoints\` |
-| `C:\smart-case\train_log.txt` | `D:\POC_for_智慧分案\` |
+| `C:\smart-case\poc\checkpoints\labels.txt`    | `D:\POC_for_智慧分案\poc\checkpoints\` |
+| `C:\smart-case\train_log.txt`                 | `D:\POC_for_智慧分案\`                 |
 
 或用 scp（需 GPU 機器開啟 SSH）：
 
