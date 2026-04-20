@@ -9,9 +9,10 @@
 
 和 TextCNN 版相同，需確認：
 - `nvidia-smi` 可看到 GPU
-- Docker Desktop for Windows 已安裝（含 WSL2 + GPU 支援）
+- Docker 已安裝（Docker Desktop 或 WSL2 + Docker Engine）
 
-詳見 `GPU訓練操作手冊.md` 第一節的 Windows 安裝步驟，此處不重複。
+詳見 `GPU訓練操作手冊.md` 第一節，此處不重複。
+**Docker Desktop 無法啟動者請使用方法 B（WSL2 + Docker Engine）。**
 
 ---
 
@@ -63,43 +64,64 @@ C:\smart-case-bert\
     └── cnews.test.txt
 ```
 
+> **使用方法 B（WSL2 Ubuntu）者**：Windows 路徑對應 WSL2 路徑如下：
+> `C:\smart-case-bert\` → `/mnt/c/smart-case-bert/`
+
 ---
 
 ## 三、修改 Dockerfile — GPU 版 PyTorch
 
-在 GPU 機器上，編輯 `poc-bert/Dockerfile`：
-
-找到這行：
+找到 `poc-bert/Dockerfile` 內這行並修改：
 
 ```dockerfile
-RUN pip install --no-cache-dir \
-    torch==2.3.0 \
-    --index-url https://download.pytorch.org/whl/cpu
+# 原本（CPU 版）
+--index-url https://download.pytorch.org/whl/cpu
+
+# 改為對應 CUDA 版本（擇一）
+--index-url https://download.pytorch.org/whl/cu121   # CUDA 12.1 / 12.6 推薦
+--index-url https://download.pytorch.org/whl/cu124   # CUDA 12.4
 ```
 
-改為（依你的 CUDA 版本）：
+> 用 `nvidia-smi` 確認 CUDA Version，選最接近的。cu121 可相容 CUDA 12.x 全系列。
 
-```dockerfile
-RUN pip install --no-cache-dir \
-    torch==2.3.0 \
-    --index-url https://download.pytorch.org/whl/cu118
+**方法 A（PowerShell，記事本或 VS Code 開啟編輯）：**
+
+```powershell
+cd C:\smart-case-bert\poc-bert
+notepad Dockerfile
+```
+
+**方法 B（WSL2 Ubuntu，sed 直接替換）：**
+
+```bash
+sed -i 's/whl\/cpu/whl\/cu121/g' /mnt/c/smart-case-bert/poc-bert/Dockerfile
 ```
 
 ---
 
 ## 四、Build Image
 
+**方法 A（PowerShell）：**
+
 ```powershell
 cd C:\smart-case-bert\poc-bert
 docker build -t smart-case-bert:gpu .
 ```
 
-> 第一次 build 需下載 PyTorch GPU + transformers + BERT 預訓練模型，
-> 約需 5-10 分鐘（依網速）。
+**方法 B（WSL2 Ubuntu）：**
+
+```bash
+cd /mnt/c/smart-case-bert/poc-bert
+docker build -t smart-case-bert:gpu .
+```
+
+> 第一次 build 需下載 PyTorch GPU + transformers，約需 5-10 分鐘（依網速）。
 
 ---
 
 ## 五、執行訓練
+
+**方法 A（PowerShell）：**
 
 ```powershell
 docker run --rm --gpus all `
@@ -109,6 +131,18 @@ docker run --rm --gpus all `
   -v C:\smart-case-bert\poc-bert\src:/app/src `
   smart-case-bert:gpu `
   python src/train.py 2>&1 | Tee-Object -FilePath C:\smart-case-bert\bert_train_log.txt
+```
+
+**方法 B（WSL2 Ubuntu）：**
+
+```bash
+docker run --rm --gpus all \
+  -e PYTHONUNBUFFERED=1 \
+  -v /mnt/c/smart-case-bert/data:/app/data:ro \
+  -v /mnt/c/smart-case-bert/poc-bert/checkpoints:/app/checkpoints \
+  -v /mnt/c/smart-case-bert/poc-bert/src:/app/src \
+  smart-case-bert:gpu \
+  python src/train.py 2>&1 | tee /mnt/c/smart-case-bert/bert_train_log.txt
 ```
 
 > **注意**：第一次執行會自動從 HuggingFace Hub 下載 `hfl/chinese-roberta-wwm-ext`（約 400MB），
@@ -151,8 +185,14 @@ docker run --rm --gpus all `
 
 ## 六、確認訓練成果
 
+**方法 A（PowerShell）：**
 ```powershell
 dir C:\smart-case-bert\poc-bert\checkpoints\
+```
+
+**方法 B（WSL2 Ubuntu）：**
+```bash
+ls -lh /mnt/c/smart-case-bert/poc-bert/checkpoints/
 ```
 
 預期看到：
@@ -187,8 +227,10 @@ bert-model/                       （目錄）
 | GPU 機器上的路徑 | 複製到筆電 |
 |-----------------|-----------|
 | `C:\smart-case-bert\poc-bert\checkpoints\labels.txt` | `D:\POC_for_智慧分案\poc-bert\checkpoints\` |
-| `C:\smart-case-bert\poc-bert\checkpoints\bert-model\` (整個目錄) | `D:\POC_for_智慧分案\poc-bert\checkpoints\` |
+| `C:\smart-case-bert\poc-bert\checkpoints\bert-model\`（整個目錄） | `D:\POC_for_智慧分案\poc-bert\checkpoints\` |
 | `C:\smart-case-bert\bert_train_log.txt` | `D:\POC_for_智慧分案\` |
+
+> **方法 B 用戶**：檔案存在 `/mnt/c/smart-case-bert/` 下，對應 Windows 路徑 `C:\smart-case-bert\`，直接用檔案總管複製即可。
 
 ---
 
