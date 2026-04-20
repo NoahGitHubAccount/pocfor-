@@ -1,7 +1,7 @@
 # 智慧分案 POC 重建計畫
 
 > **最後更新**：2026-04-20
-> **狀態總覽**：兩個方案 GPU 訓練完成。TextCNN 62% / BERT 76%。下一步：BERT checkpoint 帶回、API 驗證、效能對比報告
+> **狀態總覽**：兩個方案完整驗證完成。TextCNN 62% / BERT 76%，API 服務均正常運行。剩餘：技術移轉文件（1.8）
 
 ---
 
@@ -41,8 +41,8 @@
 | 1.2 | **詞向量處理**           | ✅ 完成          | 載入舊 word2vec，建立 embedding matrix     |
 | 1.3 | **TextCNN 模型建構**    | ✅ 完成          | PyTorch 重寫 CNN 架構                    |
 | 1.4 | **訓練流程**            | ✅ 完成           | GPU 訓練完成，val_acc=0.70，epoch 18 early stop |
-| 1.5 | **預測功能**            | ✅ 程式碼完成       | predict.py 已寫好 → 待 API 啟動驗證            |
-| 1.6 | **API 服務**          | ✅ 程式碼完成       | api.py 已寫好 → 待啟動驗證                     |
+| 1.5 | **預測功能**            | ✅ 完成            | predict.py 驗證完成，預測結果正確                  |
+| 1.6 | **API 服務**          | ✅ 完成            | Port 8080 服務正常，/predict /tfidf /health 均通 |
 | 1.7 | **測試與驗證**           | ✅ 完成           | 測試集 62.02%，Macro F1 0.58，混淆矩陣已產出      |
 | 1.8 | **技術移轉文件**          | 🔨 待完成         | 架構圖、部署流程、API 規格文件                     |
 
@@ -81,7 +81,7 @@
 | 2.1 | **BERT 資料載入與 Tokenizer** | ✅ 完成      | 用 BERT Tokenizer 取代 jieba     |
 | 2.2 | **BERT 分類模型**            | ✅ 完成      | HuggingFace 微調中文 BERT         |
 | 2.3 | **BERT 訓練流程**            | ✅ 完成      | GPU 訓練完成，val_acc=0.76，Macro F1 0.73  |
-| 2.4 | **BERT 預測 + API**        | ✅ 程式碼完成   | 待 checkpoint 帶回後啟動驗證              |
+| 2.4 | **BERT 預測 + API**        | ✅ 完成        | Port 8081 服務正常，預測結果驗證完成           |
 | 2.5 | **BERT GPU 訓練指南**        | ✅ 完成      | docs/GPU訓練操作手冊_BERT.md           |
 | 2.6 | **效能對比報告**               | ✅ 完成      | TextCNN 62% vs BERT 76%，詳見下方       |
 

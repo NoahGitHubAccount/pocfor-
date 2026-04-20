@@ -179,7 +179,7 @@ C:\smart-case\
 ## 三、修改 Dockerfile 以啟用 GPU
 
 在 GPU 機器上，編輯 `poc/Dockerfile`，將 PyTorch 從 CPU 版改為 GPU 版：
-
+  
 ```powershell
 cd C:\smart-case\poc
 ```
@@ -308,11 +308,11 @@ cache/              （斷詞快取，可不帶回）
 
 ### 需要複製回來的檔案
 
-| 檔案 | 說明 |
-|------|------|
-| `checkpoints/best_model.pt` | **必要**，訓練好的模型權重 |
-| `checkpoints/labels.txt` | **必要**，標籤對照表 |
-| `train_log.txt` | **必要**，訓練紀錄（用來回報給 Claude 確認） |
+| 檔案                          | 說明                           |
+| --------------------------- | ---------------------------- |
+| `checkpoints/best_model.pt` | **必要**，訓練好的模型權重              |
+| `checkpoints/labels.txt`    | **必要**，標籤對照表                 |
+| `train_log.txt`             | **必要**，訓練紀錄（用來回報給 Claude 確認） |
 
 ### 複製回筆電
 

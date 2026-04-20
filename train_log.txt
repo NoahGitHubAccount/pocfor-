@@ -1,0 +1,52 @@
+[train] 使用裝置：cuda
+[train] 載入資料中（首次執行需斷詞，約 3-5 分鐘）...
+[data_loader] 開始斷詞編碼（23329 筆）...
+Building prefix dict from the default dictionary ...
+Dumping model to file cache /tmp/jieba.cache
+Loading model cost 0.354 seconds.
+Prefix dict has been built successfully.
+  ... 5000/23329
+  ... 10000/23329
+  ... 15000/23329
+  ... 20000/23329
+[data_loader] 快取已存：/app/checkpoints/cache/cnews.train_encoded.npz
+[data_loader] 開始斷詞編碼（2916 筆）...
+[data_loader] 快取已存：/app/checkpoints/cache/cnews.val_encoded.npz
+[train] 訓練批次：365，驗證批次：46
+[word2vec] 詞向量載入完成：shape=(8000, 100), dtype=float32
+[word2vec] Embedding Layer 建立完成：freeze=False
+
+[train] 開始訓練，共 30 epochs，early stop patience=5
+------------------------------------------------------------
+Epoch 001/30 | train loss=1.1724 acc=0.6020 | val loss=1.2207 acc=0.5953 | 2.7s
+  ✓ 最佳模型已儲存（val_acc=0.5953）
+Epoch 002/30 | train loss=0.8737 acc=0.7119 | val loss=1.2280 acc=0.6073 | 2.0s
+  ✓ 最佳模型已儲存（val_acc=0.6073）
+Epoch 003/30 | train loss=0.7668 acc=0.7518 | val loss=1.1237 acc=0.6389 | 2.0s
+  ✓ 最佳模型已儲存（val_acc=0.6389）
+Epoch 004/30 | train loss=0.6899 acc=0.7802 | val loss=1.0377 acc=0.6643 | 2.0s
+  ✓ 最佳模型已儲存（val_acc=0.6643）
+Epoch 005/30 | train loss=0.6039 acc=0.8073 | val loss=1.0405 acc=0.6677 | 2.0s
+  ✓ 最佳模型已儲存（val_acc=0.6677）
+Epoch 006/30 | train loss=0.5415 acc=0.8275 | val loss=1.0385 acc=0.6759 | 2.0s
+  ✓ 最佳模型已儲存（val_acc=0.6759）
+Epoch 007/30 | train loss=0.4892 acc=0.8447 | val loss=1.0083 acc=0.6999 | 2.0s
+  ✓ 最佳模型已儲存（val_acc=0.6999）
+Epoch 008/30 | train loss=0.4420 acc=0.8596 | val loss=1.0829 acc=0.6818 | 1.9s
+Epoch 009/30 | train loss=0.3963 acc=0.8740 | val loss=1.1642 acc=0.6879 | 2.0s
+Epoch 010/30 | train loss=0.3638 acc=0.8827 | val loss=1.0952 acc=0.7010 | 2.0s
+  ✓ 最佳模型已儲存（val_acc=0.7010）
+Epoch 011/30 | train loss=0.3293 acc=0.8926 | val loss=1.1689 acc=0.6862 | 3.4s
+Epoch 012/30 | train loss=0.2718 acc=0.9149 | val loss=1.1778 acc=0.6927 | 2.0s
+Epoch 013/30 | train loss=0.2533 acc=0.9202 | val loss=1.1697 acc=0.7016 | 2.0s
+  ✓ 最佳模型已儲存（val_acc=0.7016）
+Epoch 014/30 | train loss=0.2417 acc=0.9234 | val loss=1.1939 acc=0.6958 | 2.0s
+Epoch 015/30 | train loss=0.2303 acc=0.9289 | val loss=1.2650 acc=0.6934 | 2.0s
+Epoch 016/30 | train loss=0.2025 acc=0.9368 | val loss=1.2734 acc=0.6955 | 2.0s
+Epoch 017/30 | train loss=0.1924 acc=0.9384 | val loss=1.2291 acc=0.6972 | 2.0s
+Epoch 018/30 | train loss=0.1889 acc=0.9396 | val loss=1.2785 acc=0.6972 | 2.0s
+
+[train] Early stopping：連續 5 epochs 驗證集無改善
+
+[train] 訓練完成。最佳驗證準確度：0.7016
+[train] 模型已存至：/app/checkpoints/best_model.pt
