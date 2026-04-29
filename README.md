@@ -100,8 +100,8 @@ curl http://localhost:8080/health
 
 ## 技術文件
 
-- [自動化訓練文件](docs/01_自動化訓練文件.md)
-- [預測 API 文件](docs/02_預測API文件.md)
-- [分案系統 README](docs/03_分案系統README.md)
-- [GPU 訓練操作手冊（TextCNN）](docs/GPU訓練操作手冊.md)
-- [GPU 訓練操作手冊（BERT）](docs/GPU訓練操作手冊_BERT.md)
+- [自動化訓練文件](01_自動化訓練文件.md)
+- [預測 API 文件](02_預測API文件.md)
+- [分案系統 README](03_分案系統README.md)
+- [GPU 訓練操作手冊（TextCNN）](GPU訓練操作手冊.md)
+- [GPU 訓練操作手冊（BERT）](GPU訓練操作手冊_BERT.md)
