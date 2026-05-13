@@ -146,3 +146,29 @@ poc/（TextCNN）                poc-bert/（BERT）
 - 技術說明採「術語 + 白話」對照
 - 安裝任何軟體前先確認是否已存在
 - **結果導向**：不堅持舊技術，選最能達成目標的方案
+
+---
+
+## 階段三：smart-ai 系統重構與多機關支援（BERT 分類）
+
+> **資料來源**：input/smart-ai-plan.md
+> **目標**：將系統重構為可支援多系統、多機關的架構，並完成 DB 連線與 API 路由，暫不引入 LLM。
+
+### 技術選型
+| 項目 | 技術方案 | 說明 |
+|------|---------|------|
+| 目錄結構 | /systems/{system}/orgs/{org} | 依機關隔離設定與模型 |
+| DB 連線 | PyMySQL / SQLAlchemy | MySQL/MSSQL 統一介面 |
+| 模型快取 | Lazy Loading + LRU Cache | 解決 12GB VRAM 限制 |
+| 排程訓練 | APScheduler / Cron | 定期抓取 DB 資料訓練 |
+
+### 工作項目
+
+| #   | 工作項目 | 狀態 | 說明 |
+| --- | -------- | ---- | ---- |
+| 3.1 | **重構專案架構** | 🔨 待完成 | 建立 smart-ai/ 頂層，遷移 src/，實作 core/db_connector.py |
+| 3.2 | **config.yaml 規格化** | 🔨 待完成 | 以 YAML 取代 config.py，定義 input_fields 與 outputs |
+| 3.3 | **API 路由與模型切換** | 🔨 待完成 | 實作 core/model_manager.py (包含版本切換與 LRU 快取) |
+| 3.4 | **即時與批次推論 API** | 🔨 待完成 | 實作 /predict 與 /batch 接口 |
+| 3.5 | **觸發訓練 API** | 🔨 待完成 | 實作 /train 接口，接收 DB 參數並執行訓練 |
+| 3.6 | **定期訓練排程** | 🔨 待完成 | 實作 core/scheduler.py |
