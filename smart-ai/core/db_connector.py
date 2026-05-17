@@ -27,12 +27,13 @@ class DBConnector(ABC):
 
 
 class MySQLConnector(DBConnector):
-    def __init__(self):
-        self.host     = os.environ["DB_HOST"]
-        self.port     = int(os.environ.get("DB_PORT", 3306))
-        self.user     = os.environ["DB_USER"]
-        self.password = os.environ["DB_PASSWORD"]
-        self.database = os.environ["DB_NAME"]
+    def __init__(self, *, host: str = None, port: int = None,
+                 user: str = None, password: str = None, database: str = None):
+        self.host     = host     or os.environ["DB_HOST"]
+        self.port     = port     or int(os.environ.get("DB_PORT", 3306))
+        self.user     = user     or os.environ["DB_USER"]
+        self.password = password or os.environ["DB_PASSWORD"]
+        self.database = database or os.environ["DB_NAME"]
         self._conn    = None
 
     def connect(self) -> None:

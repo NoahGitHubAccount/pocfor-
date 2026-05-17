@@ -36,12 +36,12 @@
 
 | ID | 說明 | 狀態 | 依賴 | 完成日 |
 |----|------|------|------|--------|
-| B1 | `api/main.py`（FastAPI 主程式） | ⬜ | A6 | — |
-| B2 | `api/middleware/auth.py`（Token / API Key） | ⬜ | B1 | — |
-| B3 | `POST /api/v1/predict`（即時推論，單筆） | ⬜ | B2 | — |
-| B4 | `POST /api/v1/batch`（批次推論） | ⬜ | B3 | — |
-| B5 | `POST /api/v1/train`（觸發訓練，接收 DB 參數） | ⬜ | B3 | — |
-| B6 | `core/model_manager.py`（Lazy Loading + LRU Cache + 版本切換） | ⬜ | B1 | — |
+| B1 | `api/main.py`（FastAPI 主程式） | ✅ | A6 | 2026-05-17 |
+| B2 | `api/middleware/auth.py`（Token / API Key） | ✅ | B1 | 2026-05-17 |
+| B3 | `POST /api/v1/predict`（即時推論，單筆） | ✅ | B2 | 2026-05-17 |
+| B4 | `POST /api/v1/batch`（批次推論） | ✅ | B3 | 2026-05-17 |
+| B5 | `POST /api/v1/train`（觸發訓練，接收 DB 參數）— stub，TODO 待補 | ✅ | B3 | 2026-05-17 |
+| B6 | `core/model_manager.py`（Lazy Loading + cache） | ✅ | B1 | 2026-05-17 |
 
 ---
 

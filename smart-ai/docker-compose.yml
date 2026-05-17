@@ -1,0 +1,26 @@
+services:
+
+  # L1 smoke test（不需 GPU，輕量映像）
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    environment:
+      - SMART_AI_API_KEY=test-key
+      - SMART_AI_SYSTEMS_ROOT=/app/systems
+      - PYTHONUNBUFFERED=1
+
+  # API 服務（需要模型 checkpoint）
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./systems:/app/systems
+    environment:
+      - SMART_AI_API_KEY=${SMART_AI_API_KEY}
+      - SMART_AI_SYSTEMS_ROOT=/app/systems
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped

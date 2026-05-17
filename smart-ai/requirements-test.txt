@@ -1,0 +1,4 @@
+# L1 smoke test 專用（不需 torch / transformers）
+fastapi==0.111.0
+httpx==0.27.0
+pyyaml==6.0.1
