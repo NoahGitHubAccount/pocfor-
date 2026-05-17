@@ -1,6 +1,6 @@
 # 智慧分案 POC — 當下狀態
 
-> **最後更新**：2026-05-17
+> **最後更新**：2026-05-18
 > **進行中**：階段三 — Phase A/B 全部完成，Phase C 暫緩
 
 ## 當前工項
@@ -19,11 +19,15 @@
 **無預排開發工項。** 下次啟動依需求從以下選擇：
 
 1. **L2 端對端驗證** — 在 GPU 機器跑 `docker compose up api`，接真實 DB 測試 `/predict` 與 `/train`
-2. **harness 更新** — 依 `docs/工程管理整併方案.md` 更新 CLAUDE.md、learnings.md（可丟給 harness-engineer agent）
-3. **Phase C 啟用** — 有排程需求時，在 `api/main.py` 接回 `scheduler.py`，加入 `requirements.txt APScheduler==3.10.4`
-4. **新功能提案** — 在 `input/` 建子計畫檔，審查後加入 `input/backlog.md`
+2. **Phase C 啟用** — 有排程需求時，在 `api/main.py` 接回 `scheduler.py`，加入 `requirements.txt APScheduler==3.10.4`
+3. **新功能提案** — 在 `input/` 建子計畫檔，審查後加入 `input/backlog.md`
 
 ## 已完成 checkpoint（本 session）
+
+- **2026-05-18**：
+  - docs/ 整併：TextCNN 相關文件封存至 `plan-archive/poc_textcnn_*`
+  - 重組為三份主文件：`01_技術架構.md`、`02_API規格.md`、`03_新專案導入.md`
+  - 刪除 `notes/20260412_*` 四份過期筆記
 
 - **2026-05-17**：
   - Phase A 補完：A2/A3（config.yaml）、A4（chiefmail_back 目錄樹）、A5（取消 lora）、A6（db_connector.py）
@@ -42,11 +46,10 @@
 ## Git 狀態
 
 - branch: main
-- HEAD: 3c2931d（chore: 暫緩 Phase C 排程）
+- HEAD: e7cbb2c（docs: 整併文件結構，封存 TextCNN 相關文件）
 
 ## 備忘
 
-- `docs/工程管理整併方案.md` → harness-engineer agent 已處理完畢 ✅
 - `.claude/hooks/stop-status-snapshot.ps1` 規劃但尚未實作
 - 個人記憶位置：`~/.claude/projects/D--daily-records----POC-POC-for-----/memory/`
 
