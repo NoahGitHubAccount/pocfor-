@@ -1,39 +1,39 @@
 # 智慧分案 POC — 當下狀態
 
 > **最後更新**：2026-05-17
-> **進行中**：階段三 Phase A 架構分機關（A1+A2+A3 完成，下一步 A4）
+> **進行中**：階段三 — Phase A/B 全部完成，Phase C 暫緩
 
-## 進行中任務
+## 當前工項
 
-- [x] [Phase A.1] 建立 `smart-ai/` 頂層目錄 + 遷移 `poc-bert/src/` ✅ 2026-05-13
-- [x] [Phase A.2] `config.yaml` 規格化（取代 `config.py`）✅ 2026-05-17（L1 smoke test 全通）
-- [ ] [Phase A.3] `systems/{system}/orgs/{org}/` 目錄樹 + LoRA 預留空目錄
-- [ ] [Phase A.4] `core/db_connector.py`（MySQL only，MSSQL abstract）
+**全部完成。** 詳見 [`input/backlog.md`](input/backlog.md)。
 
-詳見 [`input/smart-ai/phase-A-架構分機關.md`](input/smart-ai/phase-A-架構分機關.md)。
-
-## 已完成 checkpoint
-
-（依時間倒序）
-
-- **2026-05-13**：
-  - **Phase A.1 完成**：`smart-ai/src/` 建立，poc-bert/src/ 8 個檔案逐字 copy，diff 空
-  - 計畫修訂 v1.3：`input/smart-ai-plan.md` Phase A/B/C 重排，LoRA 暫緩
-  - PLAN.md 重組為參照式（細節外推至 `input/smart-ai/*`、`docs/plan-archive/`）
-  - Harness 重整：CLAUDE.md / status.md / learnings.md / docs/README / notes/README 對齊現況
-- **2026-05-12**：階段一 1.8 技術移轉文件完成（`docs/04_技術架構文件.md`）
-- **2026-04-20**：BERT 訓練完成 val_acc=0.76，TextCNN 完成 val_acc=0.62
+| Phase | 狀態 | 說明 |
+|-------|------|------|
+| A | ✅ | 架構分機關、config.yaml、目錄樹、db_connector |
+| B | ✅ | FastAPI 多系統路由、auth、predict/batch/train、model_manager |
+| C1/C2 | ⏸ | 排程（程式碼備妥，未接線） |
+| C3 | ✅ | current 軟連結（B5 內完成） |
 
 ## 下次啟動第一步
 
-實作 **Phase A.3** — 建立 `systems/{system}/orgs/{org}/` 目錄樹 + LoRA 預留空目錄。
+**無預排開發工項。** 下次啟動依需求從以下選擇：
 
-執行前：
-1. 過 `/karpathy-guidelines` skill
-2. 對照 `phase-A-架構分機關.md` 中的目錄結構產出表
-3. 建立 `chiefmail_back/orgs/hpa/` + `checkpoints/bert/` + `checkpoints/lora/`（空目錄用 `.gitkeep`）
-4. 建立 `chiefmail_back/llm_base/`（空目錄預留，A5）
-5. 驗收：`smart-ai/systems/` 目錄樹符合 phase-A 規格表
+1. **L2 端對端驗證** — 在 GPU 機器跑 `docker compose up api`，接真實 DB 測試 `/predict` 與 `/train`
+2. **harness 更新** — 依 `docs/工程管理整併方案.md` 更新 CLAUDE.md、learnings.md（可丟給 harness-engineer agent）
+3. **Phase C 啟用** — 有排程需求時，在 `api/main.py` 接回 `scheduler.py`，加入 `requirements.txt APScheduler==3.10.4`
+4. **新功能提案** — 在 `input/` 建子計畫檔，審查後加入 `input/backlog.md`
+
+## 已完成 checkpoint（本 session）
+
+- **2026-05-17**：
+  - Phase A 補完：A2/A3（config.yaml）、A4（chiefmail_back 目錄樹）、A5（取消 lora）、A6（db_connector.py）
+  - 工程管理整併：新增 `input/backlog.md`（唯一工項狀態）、`docs/工程管理整併方案.md`
+  - Phase B 全部完成：B1–B6（L1 驗收 8/8）、B5 完整實作（DB 抓資料 → 訓練 → versioned checkpoint → current 軟連結）
+  - Phase C 暫緩：scheduler.py 備妥未接線
+  - 需求情境補充：部署拓樸（dev 多系統 / prod 單系統）記錄至 `input/smart-ai-plan.md`
+
+- **2026-05-13**：Phase A.1 完成、Harness 重整、計畫修訂 v1.3
+- **2026-04-20**：BERT val_acc=0.76、TextCNN val_acc=0.62
 
 ## Blocker
 
@@ -42,12 +42,13 @@
 ## Git 狀態
 
 - branch: main
-- HEAD: a244de9（最近一筆，可能已不是最新）
+- HEAD: 3c2931d（chore: 暫緩 Phase C 排程）
 
 ## 備忘
 
-- `.claude/hooks/stop-status-snapshot.ps1` 規劃但尚未實作（CLAUDE 內仍假設它存在 — 待補或刪除假設）
-- 個人記憶 4 條已寫入 `~/.claude/projects/D--daily-records----POC-POC-for-----/memory/`
+- `docs/工程管理整併方案.md` 已產出，待 harness-engineer agent 處理 CLAUDE.md / learnings.md 更新
+- `.claude/hooks/stop-status-snapshot.ps1` 規劃但尚未實作
+- 個人記憶位置：`~/.claude/projects/D--daily-records----POC-POC-for-----/memory/`
 
 ---
 
