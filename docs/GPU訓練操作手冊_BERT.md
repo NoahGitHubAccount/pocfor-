@@ -1,6 +1,9 @@
 # GPU 機器訓練操作手冊（BERT 版）
 
-> BERT 訓練比 TextCNN 更簡單：不需要 jieba 斷詞、不需要 word2vec。
+> **適用版本**：BERT POC（`poc-bert/`）手動 GPU 訓練。
+> smart-ai 優先使用 `POST /api/v1/train` API 端點觸發訓練（詳見 `02_API規格.md`）；
+> 需要手動 GPU 訓練時才使用本手冊。
+>
 > 預估 GPU 訓練時間：15-30 分鐘（含模型下載）
 
 ---
