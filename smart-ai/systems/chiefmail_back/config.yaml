@@ -1,0 +1,24 @@
+# 系統共用設定 — chiefmail_back
+# 機關層級（orgs/*/config.yaml）繼承此設定，org 特定參數在各機關檔案覆寫。
+
+system: chiefmail_back
+description: 公文主旨 / 內容 → 指派單位 + 建議類別
+
+input_fields:
+  - subject
+  - content
+
+outputs:
+  unit: true
+  category: true
+
+model:
+  pretrained: hfl/chinese-roberta-wwm-ext
+  max_length: 512
+
+training:
+  epochs: 5
+  batch_size: 16
+  learning_rate: 2.0e-5
+  warmup_ratio: 0.1
+  weight_decay: 0.01

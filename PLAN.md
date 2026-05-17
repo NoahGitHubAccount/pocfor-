@@ -1,174 +1,65 @@
 # 智慧分案 POC 重建計畫
 
-> **最後更新**：2026-04-20
-> **狀態總覽**：兩個方案完整驗證完成。TextCNN 62% / BERT 76%，API 服務均正常運行。剩餘：技術移轉文件（1.8）
-
----
-
-## 執行環境
-
-| 項目             | 現況                                  |
-| -------------- | ----------------------------------- |
-| 主機             | Windows 11 + WSL2                   |
-| WSL distro     | Rocky 9.7（預設）                       |
-| Docker         | 29.2.1（已安裝於 Rocky9）                 |
-| Docker Compose | v5.0.2                              |
-| Python (host)  | 3.9.25（系統內建，pip 無額外套件）              |
-| GPU            | 無（訓練移至外部 GPU 機器）                    |
-| 現有容器           | n8n_poc、customer-service-classifier |
-
-> **原則**：所有成果以 Docker 封裝，本機不安裝 Python 套件。Rocky9 僅作為 Docker host。
+> **最後更新**：2026-05-13
+> **當前焦點**：階段三 Phase A — smart-ai 架構分機關（未開工）
+> **下次第一步**：見 [`status.md`](status.md)
 
 ---
 
 ## 路線圖
 
-```
-方向 A：PyTorch TextCNN          ✅ GPU 訓練完成（測試集 62%，Macro F1 0.58）
-方向 B：BERT-Chinese（poc-bert/）  ✅ GPU 訓練完成（驗證集 76%，Macro F1 0.73）
-```
+| 階段 | 焦點                | 狀態     | 詳細                                                                |
+| -- | ----------------- | ------ | ----------------------------------------------------------------- |
+| 一  | TextCNN POC       | ✅ 完成   | [`docs/plan-archive/phase-1-2.md`](docs/plan-archive/phase-1-2.md) |
+| 二  | BERT POC          | ✅ 完成   | [`docs/plan-archive/phase-1-2.md`](docs/plan-archive/phase-1-2.md) |
+| 三  | smart-ai 多系統、多機關  | 🔨 進行中 | 見下方                                                              |
 
 ---
 
-## 階段一：技術重建 POC（方向 A — PyTorch TextCNN）
+## 階段三：smart-ai 架構重建
 
-### 工作項目
+> **規格主檔**：[`input/smart-ai-plan.md`](input/smart-ai-plan.md)（v1.3，初版計畫存檔）
+> **工項追蹤**：[`input/backlog.md`](input/backlog.md)（唯一狀態來源，Issue 管理）
+> **暫緩項目**：[`input/smart-ai/deferred.md`](input/smart-ai/deferred.md)
+> **開發前 gate**：實作前須先過 `/skills` 審查（當前 skill：`/karpathy-guidelines`）
 
-| #   | 工作項目                | 狀態            | 說明                                   |
-| --- | ------------------- | ------------- | ------------------------------------ |
-| 1.0 | **專案結構與 Docker 基礎** | ✅ 完成          | Dockerfile、docker-compose.yml、目錄結構   |
-| 1.1 | **資料探索與前處理**        | ✅ 完成          | 讀取 cnews.*.txt，建立 Dataset/DataLoader |
-| 1.2 | **詞向量處理**           | ✅ 完成          | 載入舊 word2vec，建立 embedding matrix     |
-| 1.3 | **TextCNN 模型建構**    | ✅ 完成          | PyTorch 重寫 CNN 架構                    |
-| 1.4 | **訓練流程**            | ✅ 完成           | GPU 訓練完成，val_acc=0.70，epoch 18 early stop |
-| 1.5 | **預測功能**            | ✅ 完成            | predict.py 驗證完成，預測結果正確                  |
-| 1.6 | **API 服務**          | ✅ 完成            | Port 8080 服務正常，/predict /tfidf /health 均通 |
-| 1.7 | **測試與驗證**           | ✅ 完成           | 測試集 62.02%，Macro F1 0.58，混淆矩陣已產出      |
-| 1.8 | **技術移轉文件**          | ✅ 完成         | 架構圖、部署流程、API 規格文件                     |
-
-### 你 GPU 訓練期間 Claude 會做的事
-
-| 優先序 | 工作內容 | 產出 |
-|--------|---------|------|
-| 1 | 撰寫 1.7 評估腳本 `eval.py` | 測試集準確度、分類報告、混淆矩陣 |
-| 2 | 撰寫 1.8 技術移轉文件 | docs/04_技術架構文件.md |
-| 3 | **建立階段二 poc-bert/ 完整方案** | 程式碼 + Dockerfile + GPU 訓練指南 |
+| Phase | 內容                  | 狀態      | 細節                                                                              |
+| ----- | ------------------- | ------- | ------------------------------------------------------------------------------- |
+| A     | 架構分機關（必做、優先）        | 🔨 待完成  | [`input/smart-ai/phase-A-架構分機關.md`](input/smart-ai/phase-A-架構分機關.md)             |
+| B     | FastAPI 多路由（必做）     | 🔨 待完成  | [`input/smart-ai/phase-B-API.md`](input/smart-ai/phase-B-API.md)                 |
+| C     | 定期訓練排程（選做）          | 🔨 待完成  | [`input/smart-ai/phase-C-排程.md`](input/smart-ai/phase-C-排程.md)                   |
 
 ---
 
-## 階段二：BERT 方案（poc-bert/）
+## 執行環境
 
-> **可獨立於階段一執行** — 如果你決定直接切 BERT，跳過 TextCNN 完全沒問題
+| 項目 | 現況 |
+|---|---|
+| 主環境 | Windows 11 + WSL2 Rocky 9.7 + Docker 29.2.1 |
+| 訓練 | 外部 GPU 機器（RTX 3080 Ti 12GB） |
+| 推論 | Docker 容器；本機不裝 Python 套件 |
+| 現有容器 | `n8n_poc`、`customer-service-classifier` |
 
-### 技術選型
-
-| 項目        | TextCNN（方向 A） | BERT（方向 B）                                 |
-| --------- | ------------- | ------------------------------------------ |
-| 預訓練模型     | word2vec (自訓) | `hfl/chinese-roberta-wwm-ext`（HuggingFace） |
-| 斷詞        | jieba 手動斷詞    | BERT Tokenizer（自動，不需 jieba）                |
-| 詞彙表       | 自建 8000 詞     | BERT 內建 21128 tokens                       |
-| 訓練 epochs | 15-30         | 3-5（收斂快很多）                                 |
-| GPU 訓練時間  | ~15-30 分鐘     | ~15-30 分鐘                                  |
-| 準確度       | 一般            | 顯著更高                                       |
-| 模型大小      | ~4 MB         | ~400 MB                                    |
-| 推論速度      | 極快            | 較慢但足夠（<1 秒/筆）                              |
-
-### 工作項目
-
-| #   | 工作項目                     | 狀態        | 說明                            |
-| --- | ------------------------ | --------- | ----------------------------- |
-| 2.0 | **poc-bert 專案結構**        | ✅ 完成      | Dockerfile、requirements、目錄結構  |
-| 2.1 | **BERT 資料載入與 Tokenizer** | ✅ 完成      | 用 BERT Tokenizer 取代 jieba     |
-| 2.2 | **BERT 分類模型**            | ✅ 完成      | HuggingFace 微調中文 BERT         |
-| 2.3 | **BERT 訓練流程**            | ✅ 完成      | GPU 訓練完成，val_acc=0.76，Macro F1 0.73  |
-| 2.4 | **BERT 預測 + API**        | ✅ 完成        | Port 8081 服務正常，預測結果驗證完成           |
-| 2.5 | **BERT GPU 訓練指南**        | ✅ 完成      | docs/GPU訓練操作手冊_BERT.md           |
-| 2.6 | **效能對比報告**               | ✅ 完成      | TextCNN 62% vs BERT 76%，詳見下方       |
-
----
-
-## 效能對比報告（2026-04-20）
-
-| 指標 | TextCNN | BERT | 改善 |
-|------|---------|------|------|
-| 整體準確度 | 62% | 76% | +14% |
-| Macro F1 | 0.58 | 0.73 | +0.15 |
-| 最弱局處（臺東市公所 F1） | 0.28 | 0.55 | +0.27 |
-
-### 各局處 F1 對比
-
-| 局處 | TextCNN | BERT |
-|------|---------|------|
-| 交通及觀光發展處 | 0.67 | 0.77 |
-| 國際發展及計畫處 | 0.53 | 0.65 |
-| 建設處 | 0.64 | 0.72 |
-| 教育處 | 0.65 | 0.79 |
-| 環境保護局 | 0.59 | 0.73 |
-| 社會處 | 0.70 | 0.86 |
-| 臺東市公所 | 0.28 | 0.55 |
-| 警察局 | 0.66 | 0.84 |
-| 農業處 | 0.51 | 0.71 |
-
-**結論**：BERT 全面優於 TextCNN，建議以 BERT 作為正式部署方案。
-臺東市公所 recall 仍偏低（42%），為下一步優化重點（建議：Class Weighting 或增補資料）。
-
----
-
-## Docker 策略
-
-```
-poc/（TextCNN）                poc-bert/（BERT）
-├── Dockerfile               ├── Dockerfile
-├── docker-compose.yml       ├── docker-compose.yml
-└── Port: 8080               └── Port: 8081
-
-兩個方案可同時運行，互不衝突
-```
-
----
-
-## GPU 訓練工作清單（你帶到 GPU 機器的）
-
-你可以在 GPU 機器上**同時訓練兩個方案**（如果時間允許）：
-
-| 順序 | 方案 | 操作手冊 | 預估時間 |
-|------|------|---------|---------|
-| 1 | BERT（推薦先做） | docs/GPU訓練操作手冊_BERT.md | ~15-30 分鐘 |
-| 2 | TextCNN（選做） | docs/GPU訓練操作手冊.md | ~15-30 分鐘 |
+詳細執行環境參數見 [`docs/plan-archive/phase-1-2.md`](docs/plan-archive/phase-1-2.md)（POC 階段建立）。
 
 ---
 
 ## 協作約定
 
-- 每完成一個工作項目 → 更新本計畫狀態欄
-- 每個步驟：**寫程式 → 解釋原理 → 記錄筆記**
-- 筆記存放 `notes/`，以日期_主題命名
+- 每完成一個工作項目 → 更新對應 phase 檔案狀態 + [`status.md`](status.md)
+- 每個步驟：寫程式 → 解釋原理 → 記錄筆記（[`notes/`](notes/)）
 - 技術說明採「術語 + 白話」對照
 - 安裝任何軟體前先確認是否已存在
-- **結果導向**：不堅持舊技術，選最能達成目標的方案
+- **結果導向**：選最能達成目標的方案，不堅持舊技術
 
 ---
 
-## 階段三：smart-ai 系統重構與多機關支援（BERT 分類）
+## 進入點
 
-> **資料來源**：input/smart-ai-plan.md
-> **目標**：將系統重構為可支援多系統、多機關的架構，並完成 DB 連線與 API 路由，暫不引入 LLM。
-
-### 技術選型
-| 項目 | 技術方案 | 說明 |
-|------|---------|------|
-| 目錄結構 | /systems/{system}/orgs/{org} | 依機關隔離設定與模型 |
-| DB 連線 | PyMySQL / SQLAlchemy | MySQL/MSSQL 統一介面 |
-| 模型快取 | Lazy Loading + LRU Cache | 解決 12GB VRAM 限制 |
-| 排程訓練 | APScheduler / Cron | 定期抓取 DB 資料訓練 |
-
-### 工作項目
-
-| #   | 工作項目 | 狀態 | 說明 |
-| --- | -------- | ---- | ---- |
-| 3.1 | **重構專案架構** | 🔨 待完成 | 建立 smart-ai/ 頂層，遷移 src/，實作 core/db_connector.py |
-| 3.2 | **config.yaml 規格化** | 🔨 待完成 | 以 YAML 取代 config.py，定義 input_fields 與 outputs |
-| 3.3 | **API 路由與模型切換** | 🔨 待完成 | 實作 core/model_manager.py (包含版本切換與 LRU 快取) |
-| 3.4 | **即時與批次推論 API** | 🔨 待完成 | 實作 /predict 與 /batch 接口 |
-| 3.5 | **觸發訓練 API** | 🔨 待完成 | 實作 /train 接口，接收 DB 參數並執行訓練 |
-| 3.6 | **定期訓練排程** | 🔨 待完成 | 實作 core/scheduler.py |
+| 需求 | 路徑 |
+|---|---|
+| Agent 地圖 | [`CLAUDE.md`](CLAUDE.md) |
+| 當下進度 | [`status.md`](status.md) |
+| Agent 經驗 | [`learnings.md`](learnings.md) |
+| 人類向文件 | [`docs/README.md`](docs/README.md) |
+| 開發筆記 / 簡報素材 | [`notes/README.md`](notes/README.md) |

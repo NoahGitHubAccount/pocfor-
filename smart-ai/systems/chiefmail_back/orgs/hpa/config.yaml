@@ -1,0 +1,26 @@
+# 機關設定 — hpa（衛生局）
+# 系統共用設定：../../config.yaml
+
+org: hpa
+org_name: 衛生局
+
+model:
+  num_classes: ~  # 待填入
+
+paths:
+  data_dir: /app/data/chiefmail_back/hpa
+  checkpoint_dir: /app/systems/chiefmail_back/orgs/hpa/checkpoints
+  train_file: train.txt
+  val_file: val.txt
+  test_file: test.txt
+  model_subdir: bert
+  labels_file: labels.txt
+
+db:
+  type: mysql
+  table: ~          # 待填入資料表名稱
+  field_map:
+    subject: ~      # 待填入欄位對應
+    content: ~
+    label_unit: ~
+    label_category: ~

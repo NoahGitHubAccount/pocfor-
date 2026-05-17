@@ -4,6 +4,16 @@
 # 模型權重
 poc/checkpoints/
 poc-bert/checkpoints/
+smart-ai/systems/*/checkpoints/
+smart-ai/systems/*/orgs/*/checkpoints/
+
+# 訓練 log
+*_train_log.txt
+train_log.txt
+bert_train_log.txt
+
+# 對話紀錄歸檔
+notes/chat-logs/
 
 # 編輯器 / 工具設定
 .obsidian/

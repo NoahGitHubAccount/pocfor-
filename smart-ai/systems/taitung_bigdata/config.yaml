@@ -1,0 +1,35 @@
+# 系統設定 — taitung_bigdata
+# 對應原 poc-bert/src/config.py，欄位一對一遷移，數值不變。
+
+system: taitung_bigdata
+description: 市民陳情文字 → 局處分類
+
+# 來源 / 輸出欄位（API 介面用）
+input_fields:
+  - text
+outputs:
+  department: true
+
+# 預訓練模型（HuggingFace Hub）
+model:
+  pretrained: hfl/chinese-roberta-wwm-ext
+  num_classes: 9
+  max_length: 512
+
+# 訓練超參數
+training:
+  epochs: 5
+  batch_size: 16
+  learning_rate: 2.0e-5
+  warmup_ratio: 0.1
+  weight_decay: 0.01
+
+# 容器內路徑（Docker 約定 /app 根目錄）
+paths:
+  data_dir: /app/data
+  checkpoint_dir: /app/checkpoints
+  train_file: cnews.train.txt
+  val_file: cnews.val.txt
+  test_file: cnews.test.txt
+  model_subdir: bert-model
+  labels_file: labels.txt

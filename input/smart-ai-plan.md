@@ -1,8 +1,10 @@
 # smart-ai 系統架構修改計劃
 
-> 版本：v1.2  
-> 日期：2026-05-12  
+> 版本：v1.3  
+> 日期：2026-05-13  
 > 環境：Linux / RTX 3080 Ti 12GB / MySQL & MSSQL
+> 
+> **v1.3 變更**：依使用者決議重排優先序 — 先做「架構分機關」、再做「API 開發」、排程訓練選做；LLM LoRA 暫緩評估，property_divide 待業務需求。精準度（含臺東市公所 recall）非本期重點。
 
 ---
 
@@ -225,50 +227,17 @@ learning_rate: 2e-5
 
 ---
 
-## 七、修改計劃
+## 七、修改計劃（v1.3 重排）
 
-### 第一階段：完成現有 BERT 訓練（1-2 天）
+> **本期執行範圍**：Phase A 架構分機關 → Phase B API 開發 → Phase C 排程訓練（選做）
+> 細節已外推至獨立檔案以利維護。
 
-- [ ] 修改 `config.py`：`num_classes = 10`
-- [ ] 執行 chiefmail_hpa 訓練，驗證分類效果
-- [ ] 確認 `checkpoints/bert-model-chiefmail_hpa-20260508/` 模型產出正確
-
-### 第二階段：重構專案架構（3-5 天）
-
-- [ ] 建立 `smart-ai/` 頂層目錄
-- [ ] 遷移現有程式碼至 `src/`
-- [ ] 設計 `config.yaml` 規格，替換現有 `config.py`
-- [ ] 建立 `systems/taitung_bigdata/` 與 `systems/chiefmail_back/` 結構
-- [ ] 實作 `core/db_connector.py`（MySQL + MSSQL 統一介面）
-
-### 第三階段：FastAPI 多系統路由（3-5 天）
-
-- [ ] 實作 `api/main.py`
-- [ ] 實作 `/predict`（即時推論）
-- [ ] 實作 `/batch`（批次推論）
-- [ ] 實作 `/train`（觸發訓練）
-- [ ] 實作 `core/model_manager.py`（依 system + org 載入對應模型，實作版本切換與 LRU 快取）
-- [ ] 加入 API 驗證（Token 或 API Key）
-
-### 第四階段：LLM 生成（5-7 天）
-
-- [ ] 下載 Llama-3-TAIDE-8B 或 Breeze-7B（4-bit 量化）
-- [ ] 準備 chiefmail_hpa 回覆訓練資料（JSONL 格式）
-- [ ] 實作 `src/train_llm.py`（LoRA Fine-tune）
-- [ ] 執行訓練，驗證回覆品質
-- [ ] 整合至 `/predict` API
-
-### 第五階段：定期訓練排程（2-3 天）
-
-- [ ] 實作 `core/scheduler.py`
-- [ ] 設定各系統/機關訓練頻率（每週/每月）
-- [ ] 實作訓練完成後自動更新模型
-
-### 第六階段：property_divide（待需求確認）
-
-- [ ] 確認輸出需求
-- [ ] 設計 config.yaml
-- [ ] 訓練並整合
+| Phase | 內容 | 預估 | 細節檔 |
+|---|---|---|---|
+| A | 架構分機關 | 3-5 天 | [`smart-ai/phase-A-架構分機關.md`](smart-ai/phase-A-架構分機關.md) |
+| B | FastAPI 多路由 | 3-5 天 | [`smart-ai/phase-B-API.md`](smart-ai/phase-B-API.md) |
+| C | 定期訓練排程（選做） | 2-3 天 | [`smart-ai/phase-C-排程.md`](smart-ai/phase-C-排程.md) |
+| — | 暫緩項目（LoRA、property_divide、基線再訓練） | — | [`smart-ai/deferred.md`](smart-ai/deferred.md) |
 
 ---
 
