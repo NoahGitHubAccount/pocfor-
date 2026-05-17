@@ -1,0 +1,35 @@
+# 定期訓練排程設定（C2）
+# cron 格式：分 時 日 月 週（與 Linux crontab 相同）
+# DB 密碼請設環境變數 DB_PASSWORD 或 DB_PASSWORD_{SYSTEM大寫}
+# 本檔為樣板，正式部署前填入實際 DB 參數。
+
+jobs:
+  - system: taitung_bigdata
+    org: ~                        # 無子機關
+    cron: "0 2 * * 0"             # 每週日 02:00
+    db:
+      host: 127.0.0.1
+      port: 3306
+      user: smart_ai
+      database: smart_ai_db
+      table: case_records
+
+  - system: chiefmail_back
+    org: hpa
+    cron: "0 3 * * 0"             # 每週日 03:00
+    db:
+      host: 127.0.0.1
+      port: 3306
+      user: smart_ai
+      database: chiefmail_db
+      table: mail_records
+
+  - system: chiefmail_back
+    org: edu
+    cron: "0 4 * * 0"             # 每週日 04:00
+    db:
+      host: 127.0.0.1
+      port: 3306
+      user: smart_ai
+      database: chiefmail_db
+      table: mail_records_edu

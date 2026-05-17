@@ -11,10 +11,7 @@ sys.path.insert(0, str(ROOT / "core"))
 
 from model_manager import ModelManager  # noqa: E402
 
-SYSTEMS_ROOT = Path(os.environ.get(
-    "SMART_AI_SYSTEMS_ROOT",
-    str(ROOT / "systems"),
-))
+SYSTEMS_ROOT = Path(os.environ.get("SMART_AI_SYSTEMS_ROOT", str(ROOT / "systems")))
 
 
 @asynccontextmanager
