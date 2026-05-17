@@ -55,8 +55,9 @@ def compute_metrics(eval_pred):
     return {"accuracy": acc}
 
 
-def train():
-    cfg = Config()
+def train(cfg=None):
+    if cfg is None:
+        cfg = Config()
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"[train] 使用裝置：{device}")
 

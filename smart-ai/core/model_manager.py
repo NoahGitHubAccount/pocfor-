@@ -27,7 +27,12 @@ class ModelManager:
             config_path = self._config_path(system, org)
             if not config_path.exists():
                 raise FileNotFoundError(f"找不到 config：{config_path}")
-            self._cache[key] = Predictor(Config(str(config_path)))
+            cfg = Config(str(config_path))
+            # 優先使用 current 軟連結（versioned deployment）
+            current = cfg.model_dir / "current"
+            if current.exists():
+                cfg.model_dir = current
+            self._cache[key] = Predictor(cfg)
         return self._cache[key]
 
     def _config_path(self, system: str, org: Optional[str]) -> Path:
