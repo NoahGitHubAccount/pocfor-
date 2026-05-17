@@ -46,7 +46,7 @@
 
 ## 備忘
 
-- `docs/工程管理整併方案.md` 已產出，待 harness-engineer agent 處理 CLAUDE.md / learnings.md 更新
+- `docs/工程管理整併方案.md` → harness-engineer agent 已處理完畢 ✅
 - `.claude/hooks/stop-status-snapshot.ps1` 規劃但尚未實作
 - 個人記憶位置：`~/.claude/projects/D--daily-records----POC-POC-for-----/memory/`
 
